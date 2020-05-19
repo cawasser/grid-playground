@@ -1,8 +1,27 @@
-(ns starter.browser)
+(ns starter.browser
+  (:require [reagent.core :as r]
+            [grid.grid :as grid]
+            [grid.dummy-contents :refer [make-content]]))
+
+
+(defn home-page []
+
+  [:p "Reagent is alive!"]
+  [grid/grid (make-content 5)])
+
+
+
+
+
+
+(defn mount [c]
+  (r/render-component [c] (.getElementById js/document "app")))
+
 
 ;; start is called by init and after code reloading finishes
 (defn ^:dev/after-load start []
-  (js/console.log "start"))
+  (js/console.log "start")
+  (mount home-page))
 
 (defn ^:export init []
   ;; init is called ONCE when the page loads
