@@ -33,7 +33,7 @@
         :devtools
         {:http-root "public"
          :http-port 8020
-         :watch-dir "target/css"
+         :watch-dir "public/css"
          :preloads [day8.re-frame-10x.preload]}}}}
                     ;re-frisk.preload]}}}}
 
