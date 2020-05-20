@@ -1,13 +1,22 @@
 (ns starter.browser
   (:require [reagent.core :as r]
+            [re-frame.core :as rf]
             [grid.grid :as grid]
             [grid.dummy-contents :refer [make-content]]))
 
 
-(defn home-page []
 
-  [:p "Reagent is alive!"]
-  [grid/grid (make-content 5)])
+(defn- fixed-grid [content]
+  (prn "fixed-grid re-render")
+  (into [:div]
+    content))
+
+(defn home-page []
+  [:div
+   [:p "react-grid-layout"]
+   [grid/grid (make-content 5)]
+   [:p "fixed div"]
+   [fixed-grid (make-content 5)]])
 
 
 
@@ -19,8 +28,9 @@
 
 
 ;; start is called by init and after code reloading finishes
-(defn ^:dev/after-load start []
+(defn start []
   (js/console.log "start")
+  (rf/dispatch [:init-db])
   (mount home-page))
 
 (defn ^:export init []
@@ -30,6 +40,6 @@
   (js/console.log "init")
   (start))
 
-;; this is called before any code is reloaded
-(defn ^:dev/before-load stop []
-  (js/console.log "stop"))
+;;; this is called before any code is reloaded
+;(defn ^:dev/before-load stop []
+;  (js/console.log "stop"))

@@ -7,6 +7,7 @@
 
 (defn grid [content]
 
+  (prn ">>>> re-rendering grid <<<<")
   (into [:> (WidthProvider Responsive)
          {:id        "test-grid"
           :className "layout"
