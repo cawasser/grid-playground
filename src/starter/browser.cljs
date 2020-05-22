@@ -12,11 +12,14 @@
     content))
 
 (defn home-page []
-  [:div
-   [:p "react-grid-layout"]
-   [grid/grid (make-content 5)]
-   [:p "fixed div"]
-   [fixed-grid (make-content 5)]])
+  (let [content (make-content 5)
+        layout @(rf/subscribe [:layout])]
+    (prn "home-page" content "////" layout)
+    [:div
+     [:p "react-grid-layout"]
+     [grid/grid content layout]
+     [:p "fixed div"]
+     [fixed-grid (make-content 5)]]))
 
 
 
@@ -30,7 +33,7 @@
 ;; start is called by init and after code reloading finishes
 (defn start []
   (js/console.log "start")
-  (rf/dispatch [:init-db])
+  (rf/dispatch-sync [:init-db])
   (mount home-page))
 
 (defn ^:export init []

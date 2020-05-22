@@ -5,17 +5,66 @@
 
 
 
+(defn- apply-updates [new-layout old-layout]
+  (-> old-layout
+    (assoc :x (:x new-layout))
+    (assoc :y (:y new-layout))
+    (assoc :w (:w new-layout))
+    (assoc :h (:h new-layout))))
+
+
+(defn reduce-layouts [layout]
+  (map (fn [n]
+         {:y (:y n)
+          :x (:x n)
+          :w (:w n)
+          :h (:h n)
+          :i (:i n)})
+    layout))
+
+
+(defn update-layout [old-layout layout]
+  (let [ret (->> (for [old old-layout
+                       l   layout]
+                   (if (= (str (:i old)) (:i l))
+                     (apply-updates l old)))
+              (remove nil?)
+              (into []))]
+    ;(prn "update-layout" ret)
+    ret))
+
+
+
+
+
+
+
 (rf/reg-event-db
   :init-db
   (fn-traced [db _]
-    (prn "init app-db")
+    ;(prn "init app-db")
     (assoc db
       :widgets {:source-0 [1 1]
                 :source-1 [1 1]
                 :source-2 [2 1]
                 :source-3 [3 1]
                 :source-4 [4 1]}
+      :layout [{:i 0 :x 0 :y 0 :w 1 :h 1}
+               {:i 1 :x 0 :y 0 :w 1 :h 1}
+               {:i 2 :x 0 :y 0 :w 1 :h 1}
+               {:i 3 :x 0 :y 0 :w 1 :h 1}
+               {:i 4 :x 0 :y 0 :w 1 :h 1}]
       :last-tick 0)))
+
+
+
+(rf/reg-event-db
+  :update-layout
+  (fn-traced [db [_ layout]]
+    (let [new-layout (update-layout (:layout db) layout)
+          ret (assoc db :layout new-layout)]
+      (prn ":update-layout" ret)
+      ret)))
 
 
 
@@ -24,9 +73,11 @@
   :add-source
   (fn-traced [db [_ source-id source-tick source-value]]
     (let [ret (assoc-in db [:widgets source-id] [source-tick source-value])]
-
-      (prn ":add-source" ret)
+      ;(prn ":add-source" ret)
       ret)))
+
+
+
 
 (defn- tick-update [t v i]
   (if (= 0 (mod i t))
@@ -52,11 +103,16 @@
 (rf/reg-sub
   :subscribe
   (fn [db [_ source-id]]
-    (prn ":subscribe" source-id)
     (-> db
       :widgets
       source-id)))
 
+
+(rf/reg-sub
+  :layout
+  (fn [db _]
+    (-> db
+      :layout)))
 
 
 
@@ -69,9 +125,10 @@
 
 
 (defn one-dummy-content [id content]
-  ^{:key id} [:div {:key   id
-                    :style {:border-style "solid"}}
-              [:p (str @(rf/subscribe [:subscribe content]))]])
+  ^{:key id}
+  [:div {:key   id
+         :style {:border-style "solid"}}
+   [:p (str @(rf/subscribe [:subscribe content]))]])
 
 
 
@@ -85,7 +142,31 @@
 
 
 
+(comment
+  (def w (widgets @re-frame.db/app-db))
 
+  (rf/dispatch [:init-db])
+
+  (apply-updates {} {})
+  (def layout
+    [{:y 0, :maxH nil, :moved false, :minW nil, :w 1, :static false, :isDraggable nil, :isResizable nil, :h 1, :minH nil, :x 1, :maxW nil, :i "0"}
+     {:y 1, :maxH nil, :moved false, :minW nil, :w 1, :static false, :isDraggable nil, :isResizable nil, :h 1, :minH nil, :x 2, :maxW nil, :i "1"}
+     {:y 2, :maxH nil, :moved false, :minW nil, :w 1, :static false, :isDraggable nil, :isResizable nil, :h 1, :minH nil, :x 3, :maxW nil, :i "2"}
+     {:y 3, :maxH nil, :moved false, :minW nil, :w 1, :static false, :isDraggable nil, :isResizable nil, :h 1, :minH nil, :x 4, :maxW nil, :i "3"}
+     {:y           4, :maxH nil, :moved false, :minW nil, :w 1, :static false,
+      :isDraggable nil, :isResizable nil, :h 1, :minH nil, :x 5, :maxW nil, :i "4"}])
+
+  (def old-layout [{:i 0 :x 0 :y 0 :w 1 :h 1}
+                   {:i 1 :x 0 :y 0 :w 1 :h 1}
+                   {:i 2 :x 0 :y 0 :w 1 :h 1}
+                   {:i 3 :x 0 :y 0 :w 1 :h 1}
+                   {:i 4 :x 0 :y 0 :w 1 :h 1}])
+
+  (reduce-layouts layout)
+  (apply-updates (nth layout 3) (nth old-layout 3))
+  (update-layout old-layout (reduce-layouts layout))
+
+  ())
 
 
 (comment
@@ -99,6 +180,8 @@
   @(rf/subscribe [:subscribe :source-1])
 
   (keyword (str "source-" 2))
+
+  [:p (str @(rf/subscribe [:subscribe (keyword (str "source-" 3))]))]
 
   (rf/dispatch [:empty])
 
@@ -156,9 +239,11 @@
   (tick-update t v 9)
 
   (reduce-kv (fn [m k [t v]])
-             (assoc m k [t (tick-update t v current-tick)])
+    (assoc m k [t (tick-update t v current-tick)])
     {}
     db)
 
 
   ())
+
+
