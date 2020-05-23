@@ -31,9 +31,8 @@
 
 
 ;; start is called by init and after code reloading finishes
-(defn start []
+(defn ^:dev/after-load start []
   (js/console.log "start")
-  (rf/dispatch [:init-db])
   (mount home-page))
 
 (defn ^:export init []
@@ -41,6 +40,7 @@
   ;; this is called in the index.html and must be exported
   ;; so it is available even in :advanced release builds
   (js/console.log "init")
+  (rf/dispatch [:init-db])
   (start))
 
 ;;; this is called before any code is reloaded

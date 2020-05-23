@@ -4,4 +4,5 @@
 
 
 (defn grid [{:keys [content layout] :as params}]
-  (into [:div] content))
+  (into [:div {:style {:width 100 :height 100}}]
+    content))

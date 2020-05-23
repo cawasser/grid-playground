@@ -30,8 +30,7 @@
   :add-source
   (fn-traced [db [_ source-id source-tick source-value]]
     (let [ret (assoc-in db [:widgets source-id] [source-tick source-value])]
-
-      (prn ":add-source" ret)
+      ;(prn ":add-source" ret)
       ret)))
 
 (defn- tick-update [t v i]
@@ -42,13 +41,13 @@
 (rf/reg-event-db
   :tick
   (fn-traced [db _]
-    (prn "tick!!!!!")
+    ;(prn "tick!!!!!")
     (let [next-tick (inc (:last-tick db))
           ret       (reduce-kv (fn [m k [t v]]
                                  (assoc m k [t (tick-update t v next-tick)]))
                       {}
                       (:widgets db))]
-      (prn ":tick" ret)
+      ;(prn ":tick" ret)
       (assoc db
         :last-tick next-tick
         :widgets ret))))
@@ -58,7 +57,7 @@
 (rf/reg-sub
   :subscribe
   (fn [db [_ source-id]]
-    (prn ":subscribe" source-id)
+    ;(prn ":subscribe" source-id)
     (-> db
       :widgets
       source-id)))
@@ -67,7 +66,7 @@
 (rf/reg-sub
   :layout-widget
   (fn [db [_ source-id]]
-    (prn ":layout-widget" source-id)
+    ;(prn ":layout-widget" source-id)
     (-> db
       :layout
       source-id)))
