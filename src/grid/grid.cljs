@@ -22,20 +22,21 @@
 
 
 
-(defn grid [content layout]
+(defn grid [args]
   (r/create-class
     {:reagent-render
-     (fn [{:keys [id data width row-height cols breakpoints item-props on-change empty-text] :as props}]
-      (prn ">>>> re-rendering grid <<<<" content "////" layout)
-  ;
-      (into [:> (WidthProvider Responsive)
-             {:id             "test-grid"
-              :className      "layout"
-              :layout         layout
-              :cols           {:lg 12, :md 10, :sm 6, :xs 4, :xxs 2}
-              :onLayoutChange #(prn ":onLayoutChange" %1 "////" %2
-                                (onLayoutChange layout %1))}]
-        content))}))
+     (fn [{:keys [id data layouts width row-height cols breakpoints item-props on-change empty-text] :as props}]
+       (prn ">>>> re-rendering grid <<<<" data "////" layouts)
+       ;
+       (into [:> (WidthProvider Responsive)
+              {:id             "test-grid"
+               :className      "layout"
+               :layouts        layouts
+               :cols           {:lg 12, :md 10, :sm 6, :xs 4, :xxs 2}
+               :breakpoints    {:lg 1200, :md 996, :sm 768, :xs 480, :xxs 0}
+               :onLayoutChange #(prn ":onLayoutChange" %1 "////" %2
+                                  (onLayoutChange data %1))}]
+         data))}))
 
 
 
@@ -49,7 +50,7 @@
           {:y 1, :maxH nil, :moved false, :minW nil, :w 1, :static false, :isDraggable nil, :isResizable nil, :h 1, :minH nil, :x 0, :maxW nil, :i "1"}
           {:y 2, :maxH nil, :moved false, :minW nil, :w 1, :static false, :isDraggable nil, :isResizable nil, :h 1, :minH nil, :x 0, :maxW nil, :i "2"}
           {:y 3, :maxH nil, :moved false, :minW nil, :w 1, :static false, :isDraggable nil, :isResizable nil, :h 1, :minH nil, :x 0, :maxW nil, :i "3"}
-          {:y 4, :maxH nil, :moved false, :minW nil, :w 1, :static false, :isDraggable nil,
+          {:y           4, :maxH nil, :moved false, :minW nil, :w 1, :static false, :isDraggable nil,
            :isResizable nil, :h 1, :minH nil, :x 0, :maxW nil, :i "4"}])
 
   (some true? (map #(:moved %) l))

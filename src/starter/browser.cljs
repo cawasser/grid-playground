@@ -13,11 +13,13 @@
 
 (defn home-page []
   (let [content (make-content 5)
-        layout @(rf/subscribe [:layout])]
+        layout  @(rf/subscribe [:layout])]
     (prn "home-page" content "////" layout)
     [:div
      [:p "react-grid-layout"]
-     [grid/grid content layout]
+     [grid/grid {:data       content
+                 :layouts    {:lg layout}
+                 :item-props {:class "widget-component"}}]
      [:p "fixed div"]
      [fixed-grid (make-content 5)]]))
 
