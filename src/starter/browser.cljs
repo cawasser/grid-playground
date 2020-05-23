@@ -2,6 +2,7 @@
   (:require [reagent.core :as r]
             [re-frame.core :as rf]
             [grid.grid :as grid]
+            [grid.cljs-grid-layout :as cljs-grid-layout]
             [grid.dummy-contents :refer [make-content]]))
 
 
@@ -13,10 +14,12 @@
 
 (defn home-page []
   [:div
-   [:p "react-grid-layout"]
-   [grid/grid (make-content 5)]
-   [:p "fixed div"]
-   [fixed-grid (make-content 5)]])
+   ;[:p "react-grid-layout"]
+   ;[grid/grid (make-content 5)]
+   [:p "cljs-grid-layout"]
+   [:button {:on-click #(rf/dispatch [:tick])} "Tick"]
+   [cljs-grid-layout/grid {:content (make-content 5)
+                           :layout (rf/subscribe [:layout])}]])
 
 
 

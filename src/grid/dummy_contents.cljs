@@ -10,11 +10,17 @@
   (fn-traced [db _]
     (prn "init app-db")
     (assoc db
-      :widgets {:source-0 [1 1]
-                :source-1 [1 1]
-                :source-2 [2 1]
-                :source-3 [3 1]
-                :source-4 [4 1]}
+      :widgets {:source-0 [1 0]
+                :source-1 [1 0]
+                :source-2 [2 0]
+                :source-3 [3 0]
+                :source-4 [4 0]}
+      :layout {:source-0 {:x 0 :y 0 :w 1 :h 1}
+               :source-1 {:x 1 :y 0 :w 1 :h 1}
+               :source-2 {:x 2 :y 0 :w 1 :h 1}
+               :source-3 {:x 3 :y 0 :w 1 :h :1}
+               :source-4 {:x 4 :y 0 :w 1 :h :1}}
+
       :last-tick 0)))
 
 
@@ -57,6 +63,20 @@
       :widgets
       source-id)))
 
+
+(rf/reg-sub
+  :layout-widget
+  (fn [db [_ source-id]]
+    (prn ":layout-widget" source-id)
+    (-> db
+      :layout
+      source-id)))
+
+
+(rf/reg-sub
+  :layout
+  (fn [db _]
+    (-> db :layout)))
 
 
 
