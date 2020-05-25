@@ -2,10 +2,28 @@
 
 (based on shadow-cljs - browser quickstart)
 
-This is a minimum template you can use as the basis for CLJS projects intended to run in the browser.
+
 
 ## Purpose
 
-Provide a simplified implementation of ["react-grid-layout"](https://github.com/strml/react-grid-layout) to make it
-easier to develop/debug rendering of the content elements placed into the grid (the dreaded "flash", where every
-"widget" does a full-render anytime one of the other "widgets" gets a data update).
+This "version" (branch) holds the development of a reactive-grid-layout written on pure ClojureScript. The goal is to eliminate
+any dependencies on Javascript and React, giving us much more control over exactly how our layout handles updates to the number
+of widgets (add/remove) their visual layout (where on the display), and the content (data form subscriptions).
+
+In the past we've had trouble with components not handling all three of these cases really well. For example, and update to a subscribed  
+source, which should only impact a single widget, forces a complete re-draw of everything, the grid AND all the widgets. This is, for  
+many reasons, unacceptable.
+
+
+
+## Todo List
+
+- [x] drag "widgets"
+- [ ] drop widgets
+- [ ] resize widgets
+- [ ] more extensive API (callbacks for saving layout, etc.)
+- [ ] grid "compaction"
+
+## Wish List?
+
+????
