@@ -55,6 +55,15 @@
 
 
 (rf/reg-sub
+  :sources
+  (fn [db _]
+    ;(prn ":subscribe" source-id)
+    (-> db
+      :widgets)))
+
+
+
+(rf/reg-sub
   :subscribe
   (fn [db [_ source-id]]
     ;(prn ":subscribe" source-id)
@@ -87,17 +96,21 @@
 
 
 
-(defn one-dummy-content [id content]
-  ^{:key id} [:div {:key   id
-                    :style {:border-style "solid"}}
-              [:p (str @(rf/subscribe [:subscribe content]))]])
 
 
+(comment
+  (def context (atom nil))
+  (def id :source-2)
+  (def c (rf/subscribe [:subscribe id]))
 
-(defn make-content [n]
-  (into []
-    (for [idx (range n)]
-      (one-dummy-content idx (keyword (str "source-" idx))))))
+  (set-drag context id)
+
+  ())
+
+;(defn make-content [n]
+;  (into []
+;    (for [idx (range n)]
+;      (one-widget-content idx (keyword (str "source-" idx))))))
 
 
 
@@ -175,7 +188,7 @@
   (tick-update t v 9)
 
   (reduce-kv (fn [m k [t v]])
-             (assoc m k [t (tick-update t v current-tick)])
+    (assoc m k [t (tick-update t v current-tick)])
     {}
     db)
 
