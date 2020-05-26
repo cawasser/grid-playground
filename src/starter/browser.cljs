@@ -2,7 +2,8 @@
   (:require [reagent.core :as r]
             [re-frame.core :as rf]
             [grid.grid :as grid]
-            [grid.cljs-grid-layout :as cljs-grid-layout]))
+            [grid.cljs-grid-layout :as cljs-grid-layout]
+            [grid.dummy-contents]))
 
 
 
@@ -17,8 +18,12 @@
    ;[grid/grid (make-content 5)]
    [:p "cljs-grid-layout"]
    [:button {:on-click #(rf/dispatch [:tick])} "Tick"]
+   ;(cljs-grid-layout/abs-dummy)
+
    [cljs-grid-layout/grid {:content (rf/subscribe [:sources])
-                           :layout (rf/subscribe [:layout])}]])
+                           :layout (rf/subscribe [:layout])
+                           :columns 10
+                           :gap 5}]])
 
 
 
