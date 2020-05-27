@@ -13,7 +13,9 @@
 
 (defn- make-widget [data-source]
   (let [d (rf/subscribe [:subscribe data-source])]
-    [dndv/draggable data-source [:p (str @d)]]))
+    [dndv/draggable data-source
+     [:p {:style {:width 200 :height 100 :border-style :solid}}
+      (str @d)]]))
 
 
 
@@ -27,7 +29,7 @@
 (defmethod dndv/drag-handle
   :my-drop-marker
   [{:keys [type id]}]
-  [:div])
+  [:div {:style {:width 200 :height 100 :border-style :dotted}}])
 
 (defmethod dndv/dropped-widget
   :bluebox
@@ -59,6 +61,9 @@
 
 (def last-id (r/atom 0))
 
+; this handle is the one to customize for how,exactly, this app wants
+; to handle dropping/moving widgets
+;
 (rf/reg-event-fx
   :my-drop-dispatch
   (fn [{db :db}
@@ -89,7 +94,7 @@
 (defn my-drop-zone
   []
   [dndv/drop-zone :drop-zone-1                              ;;:drop-zone-1 is a unique identifier
-   [:div {:style {:width        200 :height 600
+   [:div {:style {:width        200
                   :border-style :solid}}
     "drop zone"]])
 
@@ -109,21 +114,19 @@
 
   (prn "dnd-grid")
 
-  (let [drag-box-state (rf/subscribe [:dnd/drag-box])
-        db             (rf/subscribe [:db])
-        last-id        (r/atom 1)]
+  (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
 
     (rf/dispatch [:dnd/initialize-drop-zone
                   :drop-zone-1
                   {:drop-dispatch [:my-drop-dispatch]
                    :drop-marker   :my-drop-marker}
                   ;;initial elements can be put here
-                  [{:type      :bluebox
-                    :id        (keyword (str "drop-zone-element-" 0))
-                    :source-id :source-0}
-                   {:type      :redbox
-                    :id        (keyword (str "drop-zone-element-" 1))
-                    :source-id :source-3}]])
+                  []]);{:type      :bluebox
+                   ; :id        (keyword (str "drop-zone-element-" 0))
+                   ; :source-id :source-0
+                   ;{:type      :redbox
+                   ; :id        (keyword (str "drop-zone-element-" 1))
+                   ; :source-id :source-4]])
     (fn []
       [:div {:style {:width 600}}
        [:p "dnd-grid"]
@@ -133,10 +136,14 @@
 
        ; my-draggable is more like a "toolbox" of widgets that can be added to the grid
        ; TOTO: swap my-draggable for another way to add widgets
-       [make-widget :source-2]
+       [:div {:style {:float :left}}
+        [make-widget :source-1]
+        [make-widget :source-2]
+        [make-widget :source-3]]
 
-       ; my-dro-zone if the "grid" itself
-       [my-drop-zone]])))
+       ; my-drop-zone if the "grid" itself
+       [:div {:style {:float :right}}
+        [my-drop-zone]]])))
 
 
 

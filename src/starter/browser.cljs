@@ -14,6 +14,8 @@
     content))
 
 (defn home-page []
+  (js/setInterval #(rf/dispatch [:tick]) 5000) ; tick every 5 seconds
+
   [:div
    ;[:p "react-grid-layout"]
    ;[grid/grid (make-content 5)]
