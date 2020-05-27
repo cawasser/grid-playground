@@ -3,6 +3,7 @@
             [re-frame.core :as rf]
             [grid.grid :as grid]
             [grid.cljs-grid-layout :as cljs-grid-layout]
+            [grid.dnd-grid :as dnd]
             [grid.dummy-contents]))
 
 
@@ -20,10 +21,12 @@
    [:button {:on-click #(rf/dispatch [:tick])} "Tick"]
    ;(cljs-grid-layout/abs-dummy)
 
-   [cljs-grid-layout/grid {:content (rf/subscribe [:sources])
-                           :layout (rf/subscribe [:layout])
-                           :columns 10
-                           :gap 5}]])
+   [dnd/dnd-grid]])
+
+   ;[cljs-grid-layout/grid {:content (rf/subscribe [:sources])
+   ;                        :layout (rf/subscribe [:layout])
+   ;                        :columns 10
+   ;                        :gap 5}]])
 
 
 
